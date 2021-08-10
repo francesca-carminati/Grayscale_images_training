@@ -143,6 +143,25 @@ val_sampler = RandomSampler(val_set)
 # Specify number of classes
 num_classes = len(class_map_dict)
 
+class mynet(torch.asd):
+
+    def __init__(self, asd):
+        self.main_net = torchvision.resnet50()
+        self.conv_pre = nn.conv2D()
+        pass
+
+    def forward(self, x):
+
+        # Pass data through first layer
+        out = self.conv_pre(x)
+
+        # Pass data through actual network
+        out = self.main_net(out)
+
+        return out
+
+def get_network(network_name, use_pretrained):
+    return mynet()
 
 def get_network(network_name, use_pretrained):
     return pd_get_network(
