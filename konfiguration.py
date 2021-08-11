@@ -16,7 +16,7 @@ from torch.nn import CrossEntropyLoss
 ####### Settings ####### #noqa
 ########################
 
-EXPERIMENT_NAME = "Conv3channel"
+EXPERIMENT_NAME = "one_channel_1"
 
 # Dataset
 

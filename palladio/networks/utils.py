@@ -8,7 +8,19 @@ from efficientnet_pytorch import EfficientNet
 
 import torch.nn as nn
 
-
+pretrained = torchvision.models.alexnet(pretrained=True)
+class MyAlexNet(nn.Module):
+    def __init__(self, my_pretrained_model):
+        super(MyAlexNet, self).__init__()
+        self.pretrained = my_pretrained_model
+        self.my_new_layers = nn.Sequential(nn.Linear(1000, 100),
+                                           nn.ReLU(),
+                                           nn.Linear(100, 2))
+    
+    def forward(self, x):
+        x = self.pretrained(x)
+        x = self.my_new_layers(x)
+        return x
 def get_network(network_name, num_classes, use_pretrained, n_input_channels=3):
 
     if network_name == 'efficientnet-b0':
@@ -40,6 +52,15 @@ def get_network(network_name, num_classes, use_pretrained, n_input_channels=3):
             net = EfficientNet.from_name(
                 'efficientnet-b7', in_channels=n_input_channels,
                 num_classes=num_classes)
+
+    if network_name == 'resnet34':
+        net = resnet34(pretrained=use_pretrained)
+        net.fc = nn.Linear(512, num_classes)
+
+        if n_input_channels != 3:
+            net.conv1 = nn.Conv2d(
+                n_input_channels, 64, kernel_size=7, stride=2, padding=3,
+                bias=False)
 
     if network_name == 'resnet50':
         net = resnet50(pretrained=use_pretrained)

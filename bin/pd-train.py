@@ -64,7 +64,7 @@ def config():
 
     lr = 0.0001  # noqa
 
-    network_name = 'resnet50'  # noqa
+    network_name = 'resnet34'  # noqa
 
     num_epochs = 10  # noqa
 
