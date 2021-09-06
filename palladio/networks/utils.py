@@ -8,19 +8,47 @@ from efficientnet_pytorch import EfficientNet
 
 import torch.nn as nn
 
-pretrained = torchvision.models.alexnet(pretrained=True)
-class MyAlexNet(nn.Module):
-    def __init__(self, my_pretrained_model):
-        super(MyAlexNet, self).__init__()
-        self.pretrained = my_pretrained_model
-        self.my_new_layers = nn.Sequential(nn.Linear(1000, 100),
-                                           nn.ReLU(),
-                                           nn.Linear(100, 2))
+
+
+class ResNet34_conv3x3(nn.Module):
+    def __init__(self):
+        super(ResNet34_conv3x3, self).__init__()
+        self.conv1 = nn.Conv2d(1, 3, 3) #add kernel size = 1
+        self.pretrained = resnet34(pretrained = True)
+        
     
     def forward(self, x):
+        x = self.conv1(x)
         x = self.pretrained(x)
-        x = self.my_new_layers(x)
+        
         return x
+
+class ResNet34_conv1x1(nn.Module):
+    def __init__(self):
+        super(ResNet34_conv1x1, self).__init__()
+        self.conv1 = nn.Conv2d(1, 3, 1) #
+        self.pretrained = resnet34(pretrained = True)
+        
+    
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.pretrained(x)
+        
+        return x
+
+class ResNet34_inputx3(nn.Module):
+    def __init__(self):
+        super(ResNet34_input3x3, self).__init__()
+        self.pretrained = resnet34(pretrained = True)
+        
+    
+    def forward(self, x):
+        z = torch.cat((x, x, x), 1)
+        z = self.pretrained(z)
+        
+        return z
+
+
 def get_network(network_name, num_classes, use_pretrained, n_input_channels=3):
 
     if network_name == 'efficientnet-b0':
@@ -79,6 +107,19 @@ def get_network(network_name, num_classes, use_pretrained, n_input_channels=3):
             net.conv1 = nn.Conv2d(
                 n_input_channels, 64, kernel_size=7, stride=2, padding=3,
                 bias=False)
+
+    if network_name == 'resnet34_conv3x3':
+        net = ResNet34_conv3x3()
+        net.fc = nn.Linear(512, num_classes)
+    
+    if network_name == 'resnet34_conv1x1':
+        net = ResNet34_conv1x1()
+        net.fc = nn.Linear(512, num_classes)
+
+    if network_name == 'resnet34_inputx3':
+        net = ResNet34_inputx3()
+        net.fc = nn.Linear(512, num_classes)
+
 
     # Distributed, when required
     # net = nn.DataParallel(net)

@@ -16,7 +16,7 @@ from torch.nn import CrossEntropyLoss
 ####### Settings ####### #noqa
 ########################
 
-EXPERIMENT_NAME = "one_channel_1"
+EXPERIMENT_NAME = "resnet34_1"
 
 # Dataset
 
